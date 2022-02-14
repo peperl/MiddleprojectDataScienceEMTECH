@@ -3,7 +3,7 @@ This is the LifeStore_SalesList data:
 
 lifestore_searches = [id_search, id product]
 lifestore_sales = [id_sale, id_product, score (from 1 to 5), date, refund (1 for true or 0 to false)]
-lifestore_products = [id_product, n ame, price, category, stock]
+lifestore_products = [id_product, name, price, category, stock]
 """
 
 lifestore_products = [
