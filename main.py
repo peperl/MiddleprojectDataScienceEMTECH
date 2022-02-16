@@ -134,12 +134,18 @@ Generar un listado de los 5 productos menos vendidos por categoria.
 def listadoProductos_X_Categoria_con_MenoresVentas(numeroDeElementos):
 	productosOrdenados = ordenarProductos_X_ventas(True, lifestore_products, lifestore_sales, False)
 	resultado = clasificarProductos_X_categoria(productosOrdenados)
+	productos = getProductosDiccionario(lifestore_products)
 
 	### al resultado se acotará la lista a 5 elementos
 	for key, value in resultado.items():
 		resultado[key] = resultado[key][:numeroDeElementos]
 	resultado = dict(sorted(resultado.items()))
 
+	print("PRODUCTOS MENOS VENDIDOS POR CATEGORIA")
+	for categoria, idProductos in resultado.items():
+		print("categoria", categoria)
+		for idProducto in idProductos:
+			print(f'\t {productos[idProducto][0]}1')
 	return resultado
 
 """
@@ -148,6 +154,7 @@ Generar un listado de los 5 productos con mayores ventas por mes.
 def listadoProductos_X_Mes_con_MeyoresVentas(numeroDeElementos):
 	ventasXMes = clasificarVentas_x_mes(lifestore_sales)
 	result = {}
+	productos = getProductosDiccionario(lifestore_products)
 	for key, value in ventasXMes.items():
 		aux = {}
 		for idProducto in value:
@@ -160,16 +167,32 @@ def listadoProductos_X_Mes_con_MeyoresVentas(numeroDeElementos):
 			result[key] = dict( sorted(aux.items(), key=lambda item:item[1],reverse=True))
 		else:
 			result[key] = dict( sorted(aux.items(), key=lambda item:item[1],reverse=True)[:numeroDeElementos] )
-	return sorted(result.items())
+
+	resultado = dict(sorted(result.items()))
+	print("PRODUCTOS MAS VENDIDOS POR MES")
+	for categoria, idProductos in resultado.items():
+		print("mes", categoria)
+		for idProducto in idProductos:
+			print(f'\t {productos[idProducto][0]}1')
+
+	return resultado
 
 """
 Generar un listado de los 10 productos con mayores/menores búsquedas.
 """
 def listadoBusquedas_X_Producto(numeroDeElementos,isTop):
+	productos = getProductosDiccionario(lifestore_products)
+	palabra = ''
 	if isTop:
-		result = sorted(clasificarBusquedas_x_Producto(lifestore_searches).items(), key=lambda item: item[1],reverse=True)[:numeroDeElementos]
+		result = dict(sorted(clasificarBusquedas_x_Producto(lifestore_searches).items(), key=lambda item: item[1],reverse=True)[:numeroDeElementos])
+		palabra = 'MAS'
 	else:
-		result = sorted(clasificarBusquedas_x_Producto(lifestore_searches).items(), key=lambda item: item[1])[:numeroDeElementos]
+		result = dict(sorted(clasificarBusquedas_x_Producto(lifestore_searches).items(), key=lambda item: item[1])[:numeroDeElementos])
+		palabra = 'MENOS'
+
+	print("PRODUCTOS",palabra, "BUSCADOS")
+	for idProducto, numBusquedas in result.items():
+		print(f'\t El producto {productos[idProducto][0]} fue buscado {numBusquedas}')
 	return result
 	
 """
@@ -225,6 +248,16 @@ def promedioReviews_x_producto(elOrdenEsAscendente, numeroDeElementos):
 		reviewsPromedio_X_Producto = sorted(reviewsPromedio_X_Producto.items(), key=lambda item: item[1])[:numeroDeElementos]
 	else:
 		reviewsPromedio_X_Producto = sorted(reviewsPromedio_X_Producto.items(), key=lambda item: item[1], reverse=True)[:numeroDeElementos]
+
+	productosDict = getProductosDiccionario(lifestore_products)
+
+	dictResult = dict(reviewsPromedio_X_Producto)
+	if elOrdenEsAscendente:
+		print('Los productos peor rankeados son')
+	else:
+		print('Los productos peor rankeados son')
+	for idProducto, promedio in dictResult.items():
+		print(productosDict[idProducto][0], 'con un promedio de', promedio)
 	return reviewsPromedio_X_Producto
 	
 """
@@ -263,6 +296,8 @@ def reporteVentas_x_mes(orden):
 		result = dict(sorted(result.items(), key=lambda item: item[1]["venta_mensual"],reverse=True))
 	elif orden == 3:
 		result = dict(sorted(result.items(), key=lambda item: item[1]["venta_mensual"],reverse=False))
+
+	imprimirDiccionario(result)
 	return result
 
 """
